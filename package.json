@@ -1,19 +1,26 @@
 {
-  "name": "replicache-cloudflare",
-  "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
-  },
-  "devDependencies": {
-    "prettier": "^3.2.5",
-    "turbo": "^2.0.5",
-    "typescript": "^5.4.5"
-  },
-  "packageManager": "pnpm@8.15.6",
-  "engines": {
-    "node": ">=18"
-  }
+	"name": "replicache-cloudflare",
+	"private": true,
+	"scripts": {
+		"build": "turbo build",
+		"dev": "turbo dev",
+		"format": "biome format . --write",
+		"lint": "biome lint . --fix",
+		"fix": "biome check . --fix",
+		"check": "biome check ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.8.2",
+		"@cloudflare/workers-types": "4.20240620.0",
+		"prettier": "^3.2.5",
+		"turbo": "^2.0.5",
+		"typescript": "^5.5.2"
+	},
+	"packageManager": "pnpm@8.15.6",
+	"engines": {
+		"node": ">=18"
+	},
+	"dependencies": {
+		"sst": "ion"
+	}
 }
