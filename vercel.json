@@ -1,9 +1,0 @@
-{
-	"rewrites": [
-		{
-			"source": "/api/:path(.*)",
-			"destination": "https://replicache-cloudflare-kai-syncserverscript.kaispencer98.workers.dev/:path"
-		},
-		{ "source": "/(.*)", "destination": "/index.html" }
-	]
-}

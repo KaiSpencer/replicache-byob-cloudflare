@@ -21,8 +21,10 @@ async function init() {
 			const r = new Replicache({
 				name: "chat-user-id",
 				licenseKey,
-				pushURL: "/api/replicache/push",
-				pullURL: "/api/replicache/pull",
+				pushURL:
+					"https://replicache-cloudflare-kai-syncserverscript.kaispencer98.workers.dev/api/replicache/push",
+				pullURL:
+					"https://replicache-cloudflare-kai-syncserverscript.kaispencer98.workers.dev/api/replicache/pull",
 				logLevel: "debug",
 			});
 			setR(r);
