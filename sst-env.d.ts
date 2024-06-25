@@ -7,9 +7,6 @@ declare module "sst" {
       type: "sst.cloudflare.Worker"
       url: string
     }
-    Web: {
-      type: "sst.cloudflare.StaticSite"
-      url: string
-    }
   }
 }
+export {}
