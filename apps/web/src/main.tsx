@@ -7,7 +7,7 @@ import type { Message } from "@replicache-cloudflare/shared";
 
 async function init() {
 	const licenseKey =
-		import.meta.env.VITE_REPLICACHE_LICENSE_KEY || TEST_LICENSE_KEY;
+		import.meta.env.VITE_REPLICACHE_LICENSE_KEY ?? TEST_LICENSE_KEY;
 	if (!licenseKey) {
 		throw new Error("Missing VITE_REPLICACHE_LICENSE_KEY");
 	}
