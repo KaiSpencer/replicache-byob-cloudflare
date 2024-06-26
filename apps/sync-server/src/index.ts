@@ -1,38 +1,30 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { db } from "./db/middleware";
+import type { DrizzleD1Database } from "drizzle-orm/d1";
+import type * as schema from "./db/schema";
+import push from "./replicache/push";
+import pull from "./replicache/pull";
 
-const app = new Hono();
+export type DB = DrizzleD1Database<typeof schema>;
 
-app.get("/", (c) => {
+// biome-ignore lint/complexity/noBannedTypes: .
+export type Bindings = {};
+export type Variables = {
+	db: DrizzleD1Database<typeof schema>;
+};
+const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
+
+app.use("/api/*", cors());
+app.get("/", db, async (c) => {
+	const db = c.get("db");
+	const len = await db.query.test.findMany();
+	console.log(`[len] ${len.length}`);
+
 	return c.text("Hello Hono!");
 });
 
-app.post("/api/replicache/pull", (c) => {
-	return c.json({
-		// We will discuss these two fields in later steps.
-		lastMutationIDChanges: {},
-		cookie: 42,
-		patch: [
-			{ op: "clear" },
-			{
-				op: "put",
-				key: "message/qpdgkvpb9ao",
-				value: {
-					from: "Jane",
-					content: "Hey, what's for lunch?",
-					order: 1,
-				},
-			},
-			{
-				op: "put",
-				key: "message/5ahljadc408",
-				value: {
-					from: "Fred",
-					content: "tacos?",
-					order: 2,
-				},
-			},
-		],
-	});
-});
+app.route("/api/replicache/push", push);
+app.route("/api/replicache/pull", pull);
 
 export default app;

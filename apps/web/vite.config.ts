@@ -8,15 +8,5 @@ export default defineConfig(({ command }) => {
 		build: {
 			target: "esnext",
 		},
-		server: {
-			proxy: {
-				"/api": {
-					target:
-						command === "serve"
-							? "http://localhost:8787"
-							: "https://replicache-cloudflare-kai-syncserverscript.kaispencer98.workers.dev",
-				},
-			},
-		},
 	};
 });

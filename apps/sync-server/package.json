@@ -1,14 +1,22 @@
 {
 	"name": "sync-server",
 	"scripts": {
-		"dev": "wrangler dev src/index.ts",
-		"deploy": "wrangler deploy --minify src/index.ts"
+		"studio:dev": "sst shell 'drizzle-kit studio' --stage=dev",
+		"studio:prod": "sst shell 'drizzle-kit studio'",
+		"generate": "sst shell drizzle-kit generate",
+		"migrate:dev": "sst shell 'drizzle-kit migrate' --stage=dev",
+		"migrate:prod": "sst shell 'drizzle-kit migrate'"
 	},
 	"dependencies": {
-		"hono": "^4.4.8"
+		"drizzle-orm": "^0.31.2",
+		"drizzle-zod": "^0.5.1",
+		"hono": "^4.4.8",
+		"replicache": "^14.2.2",
+		"@replicache-byob-cloudflare/shared": "workspace:*",
+		"pusher": "^5.2.0"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20240529.0",
-		"wrangler": "^3.57.2"
+		"drizzle-kit": "^0.22.7"
 	}
 }

@@ -9,9 +9,11 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@replicache-cloudflare/shared": "workspace:*",
+		"@replicache-byob-cloudflare/shared": "workspace:*",
+		"nanoid": "^5.0.7",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"pusher-js": "^8",
 		"replicache": "^14.2.2",
 		"replicache-react": "^5.0.1"
 	},

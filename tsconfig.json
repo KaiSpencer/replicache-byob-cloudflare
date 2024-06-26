@@ -2,5 +2,7 @@
 	"compilerOptions": {
 		"lib": ["esnext"],
 		"types": ["@cloudflare/workers-types"]
-	}
+	},
+	"exclude": ["apps/sync-server/sst-env.d.ts"],
+	"include": ["apps/sync-server/src/**/*.ts"]
 }

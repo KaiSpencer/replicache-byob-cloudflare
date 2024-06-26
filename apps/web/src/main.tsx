@@ -1,9 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom/client";
-import { Replicache, TEST_LICENSE_KEY } from "replicache";
+import {
+	Replicache,
+	TEST_LICENSE_KEY,
+	type WriteTransaction,
+} from "replicache";
 import { useSubscribe } from "replicache-react";
-import type { Message } from "@replicache-cloudflare/shared";
+import type {
+	Message,
+	MessageWithID,
+} from "@replicache-byob-cloudflare/shared";
+import { nanoid } from "nanoid";
+import Pusher from "pusher-js";
 
 async function init() {
 	const licenseKey =
@@ -21,11 +30,21 @@ async function init() {
 			const r = new Replicache({
 				name: "chat-user-id",
 				licenseKey,
-				pushURL:
-					"https://replicache-cloudflare-kai-syncserverscript.kaispencer98.workers.dev/api/replicache/push",
-				pullURL:
-					"https://replicache-cloudflare-kai-syncserverscript.kaispencer98.workers.dev/api/replicache/pull",
+				pushURL: `${import.meta.env.VITE_API_URL}/api/replicache/push`,
+				pullURL: `${import.meta.env.VITE_API_URL}/api/replicache/pull`,
 				logLevel: "debug",
+				mutators: {
+					async createMessage(
+						tx: WriteTransaction,
+						{ id, from, content, order }: MessageWithID,
+					) {
+						await tx.set(`message/${id}`, {
+							from,
+							content,
+							order,
+						});
+					},
+				},
 			});
 			setR(r);
 			listen(r);
@@ -52,7 +71,26 @@ async function init() {
 
 		const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
-			// TODO: Create Message
+			let last: Message | null = null;
+			if (messages.length) {
+				const lastMessageTuple = messages[messages.length - 1];
+				last = lastMessageTuple[1];
+			}
+			const order = (last?.order ?? 0) + 1;
+			const username = usernameRef.current?.value ?? "";
+			const content = contentRef.current?.value ?? "";
+			console.log("order", order);
+
+			await r?.mutate.createMessage({
+				id: nanoid(),
+				from: username,
+				content,
+				order,
+			});
+
+			if (contentRef.current) {
+				contentRef.current.value = "";
+			}
 		};
 
 		return (
@@ -79,8 +117,23 @@ async function init() {
 }
 
 function listen(rep: Replicache) {
-	console.log(rep.clientID);
-	// TODO: Listen for changes on server
+	console.log("listening");
+	// Listen for pokes, and pull whenever we get one.
+	Pusher.logToConsole = true;
+	if (
+		!import.meta.env.VITE_PUBLIC_PUSHER_KEY ||
+		!import.meta.env.VITE_PUBLIC_PUSHER_CLUSTER
+	) {
+		throw new Error("Missing PUSHER_KEY or PUSHER_CLUSTER in env");
+	}
+	const pusher = new Pusher(import.meta.env.VITE_PUBLIC_PUSHER_KEY, {
+		cluster: import.meta.env.VITE_PUBLIC_PUSHER_CLUSTER,
+	});
+	const channel = pusher.subscribe("default");
+	channel.bind("poke", async () => {
+		console.log("got poked");
+		await rep.pull();
+	});
 }
 
 await init();
