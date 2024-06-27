@@ -2,6 +2,8 @@
 
 Implementation of the Build Your Own Backend (BYOB) tutorial for Replicache, on Cloudflare Workers and Cloudflare D1.
 
+This implements the [Global Versioning](https://doc.replicache.dev/strategies/global-version) Strategy 
+
 ## Technology
 
 ### Repo wide technology
