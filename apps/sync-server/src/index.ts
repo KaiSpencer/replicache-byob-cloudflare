@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { db } from "./db/middleware";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import type * as schema from "./db/schema";
 import push from "./replicache/push";
@@ -16,11 +15,7 @@ export type Variables = {
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 app.use("/api/*", cors());
-app.get("/", db, async (c) => {
-	const db = c.get("db");
-	const len = await db.query.test.findMany();
-	console.log(`[len] ${len.length}`);
-
+app.get("/", async (c) => {
 	return c.text("Hello Hono!");
 });
 

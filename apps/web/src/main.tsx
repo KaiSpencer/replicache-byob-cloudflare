@@ -48,6 +48,7 @@ async function init() {
 			});
 			setR(r);
 			listen(r);
+
 			return () => {
 				void r.close();
 			};
@@ -116,9 +117,8 @@ async function init() {
 	);
 }
 
-function listen(rep: Replicache) {
-	console.log("listening");
-	// Listen for pokes, and pull whenever we get one.
+function listen(r: Replicache) {
+	// // Listen for pokes, and pull whenever we get one.
 	Pusher.logToConsole = true;
 	if (
 		!import.meta.env.VITE_PUBLIC_PUSHER_KEY ||
@@ -132,7 +132,7 @@ function listen(rep: Replicache) {
 	const channel = pusher.subscribe("default");
 	channel.bind("poke", async () => {
 		console.log("got poked");
-		await rep.pull();
+		await r.pull();
 	});
 }
 
